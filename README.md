@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/%40nest-public%2Ftotp.svg)](https://badge.fury.io/js/%40nest-public%2Ftotp)
+[![npm version](https://badge.fury.io/js/%40nest-public%2Fnest-oss.svg)](https://badge.fury.io/js/%40nest-public%2Fnest-oss)
 
 # nest-oss
 
