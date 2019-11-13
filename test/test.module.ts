@@ -14,7 +14,7 @@ const options = {
 		cname: false, // 自定义endpoint
 		timeout: '90s'
 	},
-	domain: '' // 'img.oauther.com'
+	domain: ''
 };
 /**
  * test模块
