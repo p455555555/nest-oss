@@ -1,7 +1,7 @@
 
 import { Module, Global, DynamicModule } from '@nestjs/common';
 import { OSS_OPTIONS, OSSOptions, ossProvider } from './oss.provider';
-import { OSS as OSSService } from './oss.service';
+import { OSSService } from './oss.service';
 
 /**
  * oss方法实例化模块

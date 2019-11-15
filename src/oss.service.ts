@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { NormalSuccessResponse, DeleteMultiResult } from 'ali-oss';
 import { OSS_CONST, OSS_OPTIONS, OSSOptions } from './oss.provider';
 import { createHmac } from 'crypto';
+import * as OSS from 'ali-oss';
 import * as moment from 'moment';
 import * as stream from 'stream';
 import * as path from 'path';
@@ -20,10 +21,10 @@ interface uploadResult {
  * @class OSSService
  */
 @Injectable()
-export class OSS {
+export class OSSService {
 
     constructor(
-        @Inject(OSS_CONST) private readonly ossClient,
+        @Inject(OSS_CONST) private readonly ossClient: OSS,
         @Inject(OSS_OPTIONS) private readonly options: OSSOptions
     ) {}
 
@@ -41,7 +42,7 @@ export class OSS {
      * 流式下载
      * @param target 
      */
-    public async getStream(target: string): Promise<{ name: string; res: NormalSuccessResponse }>{
+    public async getStream(target: string): Promise<OSS.GetStreamResult>{
 
         return await this.ossClient.getStream(target);
     }
@@ -126,6 +127,8 @@ export class OSS {
      */
     public getOssSign(url: string, width?: number, height?: number) {
         let target = url;
+        // 拼装签名后访问地址
+        let urlReturn = '';
         
         if (url) { 
             const isSelfUrl = `${this.options.client.bucket}.${this.options.client.endpoint}`;
@@ -177,17 +180,14 @@ export class OSS {
 
             // hmacsha1 签名
             const sign = encodeURIComponent(createHmac('sha1', accessKey).update(toSignString).digest('base64'));
-
-            // 拼装签名后访问地址
-            let urlReturn = '';
             
             if (width && height) {
                 urlReturn = `https://${endpoint}/${target}?x-oss-process=image/resize,m_fill,w_${width},h_${height},limit_0&OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
             } else {
                 urlReturn = `https://${endpoint}/${target}?OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
             }
-
-            return urlReturn;
         }
+
+        return urlReturn;
     }
 }

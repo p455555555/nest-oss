@@ -1,5 +1,12 @@
 import { Controller, Get, Post } from '@nestjs/common';
-import { OSS } from '../src/oss.service';
+import { OSSService } from '../src/oss.service';
+
+interface File {
+	name: string;
+    buffer: Buffer;
+    size: number;
+    originalname: string;
+}
 
 /**
  * test
@@ -8,14 +15,14 @@ import { OSS } from '../src/oss.service';
  */
 @Controller()
 export class TestController {
-	constructor(private readonly oss: OSS) {}
+	constructor(private readonly OSSService: OSSService) {}
 
 	/**
 	 * 多文件上传oss
 	 */
 	@Post('uploadOSS')
-	public async uploadOSS(file) {
-		const result = await this.oss.uploadOSS(file);
+	public async uploadOSS(file: File[]) {
+		const result = await this.OSSService.uploadOSS(file);
 
 		return result;
 	}
@@ -24,8 +31,8 @@ export class TestController {
 	 * 批量删除
 	 */
 	@Get('delete')
-	public async deleteMulti(file) {
-		const result = await this.oss.deleteMulti(file);
+	public async deleteMulti(file: string[]) {
+		const result = await this.OSSService.deleteMulti(file);
 
 		return result;
 	}

@@ -1,15 +1,19 @@
 {
 	"compilerOptions": {
-		"declaration": true,
-		"module": "commonjs",
-		"removeComments": true,
-		"emitDecoratorMetadata": true,
-		"experimentalDecorators": true,
-		"target": "es6",
-		"sourceMap": true,
-		"outDir": "./lib",
-		"baseUrl": "./src"
-	},
+        "module": "commonjs",
+        "strictNullChecks": true,
+        "resolveJsonModule": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "noImplicitAny": true,
+        "target": "es2018",
+        "sourceMap": true,
+        "declaration": true,
+        "outDir": "./lib",
+        "baseUrl": "./"
+    },
 	"exclude": [
 		"node_modules", 
 		"test", 

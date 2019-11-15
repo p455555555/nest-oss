@@ -1,13 +1,13 @@
 {
     "name": "@nest-public/nest-oss",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "nest.js框架阿里云OSS上传插件",
     "main": "./index.js",
     "files": [
         "lib"
     ],
     "scripts": {
-        "build": "tsc",
+        "build": "rm -rf ./lib && tsc",
         "test": "jest"
     },
     "keywords": [
