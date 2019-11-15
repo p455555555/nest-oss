@@ -18,12 +18,12 @@ class File {
     }
 }
 
-describe('TestController (e2e)', () => {
+describe('TestController', () => {
     let testController: TestController;
     const fileName = 'nodejs-1024x768.png';
     let uploadUrl: string = '';
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const app: TestingModule  = await Test.createTestingModule({
             controllers: [TestController],
             imports: [TestModule],
@@ -36,7 +36,7 @@ describe('TestController (e2e)', () => {
         const fileBuf = fs.readFileSync(`${__dirname}/${fileName}`);
         const webFile: any = new File(fileName, fileBuf);
         const result = await testController.uploadOSS([webFile]);
-        
+
         uploadUrl = result[0].path;
 
         expect(result[0].uploaded).toBe(true);
