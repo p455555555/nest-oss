@@ -50,9 +50,9 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { OSS } from '@nest-public/nest-oss';
 
 /**
- * test
+ * AppController
  * @export
- * @class testController
+ * @class AppControllerr
  */
 @Controller()
 export class AppController {
@@ -67,6 +67,15 @@ export class AppController {
 		const result = await this.oss.uploadOSS(file);
 
 		return result;
+		// result [
+		// 	{
+		// 		uploaded: true,
+		// 		path: 'images/20191115/16420962.png',
+		// 		src: 'http://xxxx.oss-cn-shenzhen.aliyuncs.com/images/20191115/16420962.png',
+		// 		srcSign: 'https://xxx.oss-cn-shenzhen.aliyuncs.com/images/20191115/16420962.png?OSSAccessKeyId=LTAI6lgwcBcCbiKX&Expires=1573814530&Signature=brYN7qbDdyxGARc%2BdoRsnblJx2w%3D',
+		// 		message: '上传成功'
+		// 	}
+		// ]
     }
     
     /**
@@ -80,6 +89,26 @@ export class AppController {
 		const result = await this.oss.getOssSign(file, width, height);
 
 		return result;
+	}
+
+	/**
+	 * 批量删除图片
+	 */
+    @Get('getUrl')
+	public async uploadOSS(@Req() request) {
+		const uploadUrl = ['images/20191115/16420962.png'];
+        const result = await testController.deleteMulti([uploadUrl]);
+
+		return result;
+		// result {
+		// 	res: {
+		// 		status: 200,
+		// 		statusCode: 200,
+		// 		statusMessage: 'OK',
+		// 		// ....
+		// 	},
+		//  deleted: [ 'images/20191115/16420962.png' ]
+		// }
 	}
 }
 ```

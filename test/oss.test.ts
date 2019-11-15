@@ -1,9 +1,7 @@
 
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
 import * as fs from 'fs';
-import * as FormData from 'form-data';
-import { testModule } from './test.module';
+import { TestModule } from './test.module';
 import { TestController } from './test.controller';
 
 class File {
@@ -20,14 +18,15 @@ class File {
     }
 }
 
-describe('AppController (e2e)', () => {
+describe('TestController (e2e)', () => {
     let testController: TestController;
     const fileName = 'nodejs-1024x768.png';
+    let uploadUrl: string = '';
 
     beforeEach(async () => {
         const app: TestingModule  = await Test.createTestingModule({
             controllers: [TestController],
-            imports: [testModule],
+            imports: [TestModule],
         }).compile();
 
         testController = app.get<TestController>(TestController);
@@ -37,7 +36,15 @@ describe('AppController (e2e)', () => {
         const fileBuf = fs.readFileSync(`${__dirname}/${fileName}`);
         const webFile: any = new File(fileName, fileBuf);
         const result = await testController.uploadOSS([webFile]);
+        
+        uploadUrl = result[0].path;
 
         expect(result[0].uploaded).toBe(true);
+    });
+
+    it('删除图片测试', async () => {
+        const result = await testController.deleteMulti([uploadUrl]);
+
+        expect(result.res.status).toBe(200);
     });
 });

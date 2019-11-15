@@ -8,7 +8,9 @@ import * as path from 'path';
 
 interface uploadResult {
     uploaded: boolean;
+    path: string;
     src: string;
+    srcSign: string;
     message: string
 }
 
@@ -19,15 +21,11 @@ interface uploadResult {
  */
 @Injectable()
 export class OSS {
+
     constructor(
         @Inject(OSS_CONST) private readonly ossClient,
         @Inject(OSS_OPTIONS) private readonly options: OSSOptions
     ) {}
-
-    // OSS 实例
-    public oss = this.ossClient;
-    // OSS 配置
-    public config: OSSOptions = this.options;
 
     /**
      * 流式上传
@@ -36,7 +34,7 @@ export class OSS {
      */
     public async putStream(target: string, imageStream: any): Promise<any> {
 
-        return await this.oss.putStream(target, imageStream);
+        return await this.ossClient.putStream(target, imageStream);
     }
 
     /**
@@ -45,7 +43,7 @@ export class OSS {
      */
     public async getStream(target: string): Promise<{ name: string; res: NormalSuccessResponse }>{
 
-        return await this.oss.getStream(target);
+        return await this.ossClient.getStream(target);
     }
 
     /**
@@ -54,7 +52,7 @@ export class OSS {
      */
     public async delete(target: string): Promise<NormalSuccessResponse> {
 
-        return await this.oss.delete(target);
+        return await this.ossClient.delete(target);
     }
 
     /**
@@ -63,7 +61,7 @@ export class OSS {
      */
     public async deleteMulti(targets: Array<string>): Promise<DeleteMultiResult> {
 
-        return await this.oss.deleteMulti(targets);
+        return await this.ossClient.deleteMulti(targets);
     }
 
     /**
@@ -91,7 +89,9 @@ export class OSS {
                 const target = imgPath + '/' + filename;
                 const info: uploadResult = {
                     uploaded: true, 
+                    path: '',
                     src: '',
+                    srcSign: '',
                     message: '上传成功'
                 };
 
@@ -99,9 +99,11 @@ export class OSS {
                     const imageStream: any = new stream.PassThrough();
                     imageStream.end(item.buffer);
                     const uploadResult = await this.putStream(target, imageStream);
-
+                    
                     if (uploadResult.res.status === 200) {
-                        info.src = this.getOssSign(uploadResult.url);
+                        info.path = uploadResult.name
+                        info.src = uploadResult.url;
+                        info.srcSign = this.getOssSign(uploadResult.url);
                     }
                 } catch (error) {
                     console.error('error', error);
@@ -126,8 +128,8 @@ export class OSS {
         let target = url;
         
         if (url) { 
-            const isSelfUrl = `${this.config.client.bucket}.${this.config.client.endpoint}`;
-            const isSelfUrlX: string = this.config.domain;
+            const isSelfUrl = `${this.options.client.bucket}.${this.options.client.endpoint}`;
+            const isSelfUrlX: string = this.options.domain;
 
             // 判断是否包含有效地址
             if (url.indexOf(isSelfUrl) > 0 || url.indexOf(isSelfUrlX) > 0) {
@@ -142,15 +144,15 @@ export class OSS {
                 return url;
             }
             // 读取配置初始化参数
-            const accessId = this.config.client.accessKeyId;
-            const accessKey = this.config.client.accessKeySecret;
-            let endpoint = `${this.config.client.bucket}.${this.config.client.endpoint}`;
+            const accessId = this.options.client.accessKeyId;
+            const accessKey = this.options.client.accessKeySecret;
+            let endpoint = `${this.options.client.bucket}.${this.options.client.endpoint}`;
             const signDateTime = parseInt(moment().format('X'), 10);
             const outTime = 2 * 3600; // 失效时间
             const expireTime = signDateTime + outTime;
 
-            if (this.config.domain) {
-                endpoint = this.config.domain;
+            if (this.options.domain) {
+                endpoint = this.options.domain;
             }
 
             // 拼装签名字符串
@@ -164,9 +166,9 @@ export class OSS {
             let resource = '';
 
             if (width && height) {
-                resource = `/${this.config.client.bucket}/${target}?x-oss-process=image/resize,m_fill,w_${width},h_${height},limit_0`;
+                resource = `/${this.options.client.bucket}/${target}?x-oss-process=image/resize,m_fill,w_${width},h_${height},limit_0`;
             } else {
-                resource = `/${this.config.client.bucket}/${target}`;
+                resource = `/${this.options.client.bucket}/${target}`;
             }
 
             const ossHeaders = '';

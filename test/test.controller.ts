@@ -1,5 +1,4 @@
-import { Controller, Post, UseInterceptors, UploadedFiles } from '@nestjs/common';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post } from '@nestjs/common';
 import { OSS } from '../src/oss.service';
 
 /**
@@ -17,6 +16,16 @@ export class TestController {
 	@Post('uploadOSS')
 	public async uploadOSS(file) {
 		const result = await this.oss.uploadOSS(file);
+
+		return result;
+	}
+
+	/**
+	 * 批量删除
+	 */
+	@Get('delete')
+	public async deleteMulti(file) {
+		const result = await this.oss.deleteMulti(file);
 
 		return result;
 	}

@@ -12,7 +12,7 @@ export interface OSSOptions {
 export const ossProvider = () => ({
     provide: OSS_CONST,
     useFactory: (options: OSSOptions) => {
-		return new OSS(options.client);
+		  return new OSS(options.client);
     },
     inject: [OSS_OPTIONS]
 });

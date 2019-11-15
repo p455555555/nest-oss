@@ -1,7 +1,7 @@
 
 import { Module, Global, DynamicModule } from '@nestjs/common';
 import { OSS_OPTIONS, OSSOptions, ossProvider } from './oss.provider';
-import { OSS } from './oss.service';
+import { OSS as OSSService } from './oss.service';
 
 /**
  * oss方法实例化模块
@@ -11,8 +11,8 @@ import { OSS } from './oss.service';
 @Global()
 @Module({
 	imports: [],
-	providers: [OSS],
-	exports: [OSS]
+	providers: [OSSService],
+	exports: [OSSService]
 })
 
 export class OSSModule {
@@ -24,7 +24,7 @@ export class OSSModule {
                 ossProvider(),
                 { provide: OSS_OPTIONS, useValue: options }
             ],
-            exports: [OSS]
+            exports: [OSSService]
         };
     }
 }

@@ -27,4 +27,4 @@ const options = {
 	controllers: [TestController],
 })
 
-export class testModule{}
+export class TestModule{}
