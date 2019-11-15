@@ -56,11 +56,11 @@ import { OSS } from '@nest-public/nest-oss';
  */
 @Controller()
 export class AppController {
-	constructor(private readonly oss: OSS) {}
+    constructor(private readonly oss: OSS) {}
 
-	/**
-	 * 多文件上传oss
-	 */
+   /**
+    * 多文件上传oss
+    */
     @Post('uploadOSS')
     @UseInterceptors(FilesInterceptor('files'))
 	public async uploadOSS(@UploadedFiles() file) {
@@ -79,25 +79,25 @@ export class AppController {
     }
     
     /**
-	 * 对oss文件签名
-	 */
+     * 对oss文件签名
+     */
     @Get('getUrl')
-	public async uploadOSS(@Req() request) {
+    public async uploadOSS(@Req() request) {
         const url = req.query.url; // 原始oss url
         const width = req.query.width; // 设置返回图片宽度
         const height = req.query.height; // 设置返回图片高度
-		const result = await this.oss.getOssSign(file, width, height);
+        const result = await this.oss.getOssSign(file, width, height);
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * 批量删除图片
-	 */
+    /**
+     * 批量删除图片
+     */
     @Get('getUrl')
-	public async uploadOSS(@Req() request) {
-		const uploadUrl = ['images/20191115/16420962.png'];
-        const result = await testController.deleteMulti([uploadUrl]);
+    public async uploadOSS(@Req() request) {
+        const uploadUrl = ['images/20191115/16420962.png'];
+		const result = await testController.deleteMulti([uploadUrl]);
 
 		return result;
 		// result {
@@ -109,7 +109,7 @@ export class AppController {
 		// 	},
 		//  deleted: [ 'images/20191115/16420962.png' ]
 		// }
-	}
+    }
 }
 ```
 
