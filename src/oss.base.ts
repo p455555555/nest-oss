@@ -69,7 +69,7 @@ export class OSSBase {
         }
 
         if (files && files.length > 0) {
-			for (const item of files) {
+	    for (const item of files) {
                 const filename = this.getImgName(item.originalname);
                 const imgPath = `images/${moment().format('YYYYMMDD')}`;
                 const target = imgPath + '/' + filename;
@@ -99,7 +99,7 @@ export class OSSBase {
                 }
 
                 result.push(info);
-			}
+	    }
         }
 
         return result;
