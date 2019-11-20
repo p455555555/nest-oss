@@ -5,14 +5,6 @@ import * as path from 'path';
 import { OSSOptions } from './oss.provider';
 import * as OSS from 'ali-oss';
 
-// declare class OSSClient extends OSS {
-//     putStream(
-//         name: string,
-//         stream: any,
-//         options?: OSS.PutStreamOptions
-//     ): Promise<OSSSucessResponse>;
-// }
-
 export interface UploadResult {
     uploaded: boolean;
     path: string;
@@ -22,11 +14,11 @@ export interface UploadResult {
 }
 
 export interface File {
-	fieldname: string;
-	originalname: string;
-	encoding: string;
-	mimetype: string;
-	buffer: Buffer;
+    fieldname: string;
+    originalname: string;
+    encoding: string;
+    mimetype: string;
+    buffer: Buffer;
     size: number;
 }
 
