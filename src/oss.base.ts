@@ -102,6 +102,7 @@ export class OSSBase {
                 } catch (error) {
                     console.error('error', error);
                     info.uploaded = false;
+                    info.path = item.originalname;
                     info.message = '上传失败';
                 }
 
