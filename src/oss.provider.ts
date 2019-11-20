@@ -4,10 +4,11 @@ export const OSS_CONST = Symbol('OSS');
 export const OSS_OPTIONS = Symbol('OSS_OPTIONS');
 
 export interface OSSOptions {
-    client: OSS.Options
-    domain: string
+    client: OSS.Options;
+    domain?: string;
+    multi?: boolean;
+    workers?: number;
 }
-
 
 export const ossProvider = () => ({
     provide: OSS_CONST,

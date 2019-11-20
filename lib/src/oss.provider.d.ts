@@ -3,7 +3,9 @@ export declare const OSS_CONST: unique symbol;
 export declare const OSS_OPTIONS: unique symbol;
 export interface OSSOptions {
     client: OSS.Options;
-    domain: string;
+    domain?: string;
+    multi?: boolean;
+    workers?: number;
 }
 export declare const ossProvider: () => {
     provide: symbol;

@@ -5,20 +5,25 @@ import { TestModule } from './test.module';
 import { TestController } from './test.controller';
 
 interface File {
-	name: string;
-    buffer: Buffer;
+	fieldname: string;
+	originalname: string;
+	encoding: string;
+	mimetype: string;
+	buffer: Buffer;
     size: number;
-    originalname: string;
 }
+
 class File {
-    public name: string;
+    public fieldname: string;
     public buffer: Buffer;
     public size: number;
     public originalname: string;
 
     constructor(name: string, content: Buffer) {
-        this.name = name;
+        this.fieldname = 'files';
         this.originalname = name;
+        this.encoding = '7bit';
+        this.mimetype = 'image/jpeg';
         this.buffer = content;
         this.size = this.buffer.length;
     }
@@ -27,7 +32,7 @@ class File {
 describe('TestController', () => {
     let testController: TestController;
     const fileName = 'nodejs-1024x768.png';
-    let uploadUrl: string = '';
+    const uploadUrl: string[] = [];
 
     beforeAll(async () => {
         const app: TestingModule  = await Test.createTestingModule({
@@ -41,16 +46,22 @@ describe('TestController', () => {
     it('流式上传测试', async () => {
         const fileBuf = fs.readFileSync(`${__dirname}/${fileName}`);
         const webFile: File = new File(fileName, fileBuf);
-        const result = await testController.uploadOSS([webFile]);
+        const result = await testController.uploadOSS([webFile, webFile, webFile, webFile]);
 
-        uploadUrl = result[0].path;
-
-        expect(result[0].uploaded).toBe(true);
+        for (const item of result) {
+            uploadUrl.push(item.path);
+            expect(item.uploaded).toBe(true);
+        }
     });
 
     it('删除图片测试', async () => {
-        const result = await testController.deleteMulti([uploadUrl]);
+        const result = await testController.deleteMulti(uploadUrl);
 
         expect(result.res.status).toBe(200);
+    });
+
+    afterAll(() => {
+        testController.endThread();
+        process.exitCode = 0;
     });
 });

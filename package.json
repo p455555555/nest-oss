@@ -1,6 +1,6 @@
 {
     "name": "@nest-public/nest-oss",
-    "version": "1.0.3",
+    "version": "2.0.0",
     "description": "nest.js框架阿里云OSS上传插件",
     "main": "./index.js",
     "files": [
@@ -24,6 +24,7 @@
         "rxjs": "^6.5.3"
     },
     "devDependencies": {
+        "@nestjs/platform-express": "^6.10.1",
         "@nestjs/testing": "^6.9.0",
         "@types/ali-oss": "^6.0.4",
         "@types/express": "^4.16.0",

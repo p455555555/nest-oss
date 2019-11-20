@@ -15,16 +15,18 @@ config.js 配置
 ```javascript
 export const config = {
 	client: {
-		endpoint: 'oss-cn-shenzhen.aliyuncs.com', // 域名
+		endpoint: 'oss-cn-shenzhen.aliyuncs.com', // endpoint域名
 		accessKeyId: 'xxxxxxxxxxxx', // 账号
 		accessKeySecret: 'xxxxxxx', // 密码
-		bucket: 'xxxxxx', // 桶
+		bucket: 'xxxxxx', // 存储桶
 		internal: false, // 是否使用阿里云内部网访问
 		secure: true, // 使用 HTTPS
 		cname: false, // 自定义endpoint
 		timeout: '90s'
 	},
-	domain: '' // 自定义域名
+	domain: '', // 自定义域名
+	multi: true, // 是否开启多线程迸发上传（需node.js 11.7.0以上版本, 默认关闭）
+	workers: 4 // 开启线程数，默认为CPU线程数的一半
 };
 ```
 module.ts
@@ -47,7 +49,7 @@ controller.ts
 ```javascript
 import { Controller, Req, Post, Get, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { OSS } from '@nest-public/nest-oss';
+import { OSSService } from '@nest-public/nest-oss';
 
 /**
  * AppController
@@ -56,7 +58,7 @@ import { OSS } from '@nest-public/nest-oss';
  */
 @Controller()
 export class AppController {
-    constructor(private readonly oss: OSS) {}
+    constructor(private readonly oSSService: OSSService) {}
 
    /**
     * 多文件上传oss
@@ -64,7 +66,7 @@ export class AppController {
     @Post('uploadOSS')
     @UseInterceptors(FilesInterceptor('files'))
 	public async uploadOSS(@UploadedFiles() file) {
-		const result = await this.oss.uploadOSS(file);
+		const result = await this.oSSService.upload(file);
 
 		return result;
 		// result [
@@ -86,7 +88,7 @@ export class AppController {
         const url = req.query.url; // 原始oss url
         const width = req.query.width; // 设置返回图片宽度
         const height = req.query.height; // 设置返回图片高度
-        const result = await this.oss.getOssSign(file, width, height);
+        const result = await this.oSSService.getOssSign(file, width, height);
 
         return result;
     }
@@ -97,7 +99,7 @@ export class AppController {
     @Get('getUrl')
     public async uploadOSS(@Req() request) {
         const uploadUrl = ['images/20191115/16420962.png'];
-		const result = await testController.deleteMulti([uploadUrl]);
+		const result = await this.oSSService.deleteMulti([uploadUrl]);
 
 		return result;
 		// result {

@@ -1,11 +1,14 @@
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { OSSService } from '../src/oss.service';
 
 interface File {
-	name: string;
-    buffer: Buffer;
+	fieldname: string;
+	originalname: string;
+	encoding: string;
+	mimetype: string;
+	buffer: Buffer;
     size: number;
-    originalname: string;
 }
 
 /**
@@ -15,14 +18,15 @@ interface File {
  */
 @Controller()
 export class TestController {
-	constructor(private readonly OSSService: OSSService) {}
+	constructor(private readonly oSSService: OSSService) {}
 
 	/**
 	 * 多文件上传oss
 	 */
 	@Post('uploadOSS')
-	public async uploadOSS(file: File[]) {
-		const result = await this.OSSService.uploadOSS(file);
+	@UseInterceptors(FilesInterceptor('files'))
+	public async uploadOSS(@UploadedFiles() file: File[]) {
+		const result = await this.oSSService.upload(file);
 
 		return result;
 	}
@@ -32,8 +36,15 @@ export class TestController {
 	 */
 	@Get('delete')
 	public async deleteMulti(file: string[]) {
-		const result = await this.OSSService.deleteMulti(file);
+		const result = await this.oSSService.deleteMulti(file);
 
 		return result;
+	}
+
+	/**
+	 * 批量删除
+	 */
+	public endThread() {
+		this.oSSService.endThread();
 	}
 }

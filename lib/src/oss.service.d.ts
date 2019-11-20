@@ -1,28 +1,16 @@
 import { NormalSuccessResponse, DeleteMultiResult } from 'ali-oss';
 import { OSSOptions } from './oss.provider';
+import { OSSBase, UploadResult, File } from './oss.base';
 import * as OSS from 'ali-oss';
-interface uploadResult {
-    uploaded: boolean;
-    path: string;
-    src: string;
-    srcSign: string;
-    message: string;
-}
 /**
  * OSS
  * @export
  * @class OSSService
  */
-export declare class OSSService {
-    private readonly ossClient;
-    private readonly options;
+export declare class OSSService extends OSSBase {
+    protected readonly ossClient: OSS;
+    protected readonly options: OSSOptions;
     constructor(ossClient: OSS, options: OSSOptions);
-    /**
-     * 流式上传
-     * @param target
-     * @param imageStream
-     */
-    putStream(target: string, imageStream: any): Promise<any>;
     /**
      * 流式下载
      * @param target
@@ -37,23 +25,19 @@ export declare class OSSService {
      * 批量删除
      * @param target
      */
-    deleteMulti(targets: Array<string>): Promise<DeleteMultiResult>;
+    deleteMulti(targets: string[]): Promise<DeleteMultiResult>;
     /**
-     * 生成文件名(按时间)
-     * @param {*} filename
-     */
-    private getImgName;
-    /**
-     * 上传到OSS
+     * 上传
      * @param file
      */
-    uploadOSS(file: any): Promise<uploadResult[]>;
+    upload(files: File[]): Promise<UploadResult[]>;
     /**
-     * 获取私密bucket访问地址
-     * @param {*} url
-     * @param {*} width
-     * @param {*} height
+     * 上传到OSS(多线程并行上传)
+     * @param file
      */
-    getOssSign(url: string, width?: number, height?: number): string;
+    private uploadOSSMuit;
+    /**
+     * 结束上传进程(仅作为单元测试结束调用)
+     */
+    endThread(): void;
 }
-export {};
