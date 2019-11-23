@@ -60,6 +60,15 @@ describe('TestController', () => {
         expect(result.res.status).toBe(200);
     });
 
+    it('获取前端直传参数测试', () => {
+        const result = testController.getUploadSgin();
+
+        console.log('签名参数输出>>', result);
+        expect(result.policy.length).toBe('string');
+        expect(result.OSSAccessKeyId.length).toBe('string');
+        expect(result.signature.length).toBe('string');
+    });
+
     afterAll(() => {
         testController.endThread();
         process.exitCode = 0;

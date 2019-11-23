@@ -14,7 +14,7 @@ const options = {
 		cname: false, // 自定义endpoint
 		timeout: '90s'
 	},
-	multi: true,
+	multi: false,
 	workers: 4
 };
 /**

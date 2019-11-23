@@ -42,7 +42,17 @@ export class TestController {
 	}
 
 	/**
-	 * 批量删除
+	 * 前端获取签名
+	 */
+	@Get('uploadSgin')
+	public getUploadSgin() {
+		const result = this.oSSService.getUploadSgin();
+
+		return result;
+	}
+
+	/**
+	 * 测试完毕结束线程
 	 */
 	public endThread() {
 		this.oSSService.endThread();

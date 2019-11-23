@@ -91,7 +91,23 @@ export class AppController {
         const result = await this.oSSService.getOssSign(file, width, height);
 
         return result;
-    }
+	}
+	
+	/**
+	 * 前端获取签名
+	 */
+	@Get('uploadSgin')
+	public getUploadSgin() {
+		const result = this.oSSService.getUploadSgin();
+
+		return result;
+
+        // result {
+		// 	policy: 'xxxxxxxxxxxxxx';
+		// 	OSSAccessKeyId: 'xxxxxxxxxxxxxx'
+		// 	signature: 'xxxxxxxxxxxxxx'
+		// }
+	}
 
     /**
      * 批量删除图片
@@ -114,6 +130,24 @@ export class AppController {
     }
 }
 ```
+
+## 获取签名参数在浏览器端上传说明
+可以参考 https://help.aliyun.com/document_detail/31925.html?spm=a2c4g.11186623.2.11.10836e28CWrMt0#concept-frd-4gy-5db
+
+ 1. 通过接口获取签名参数
+ 2. 以fromdata的形式准备好上传数据（一次只能上传一个文件）
+```javascript
+// 上传参数
+const params = new FromData();
+formData.append('key', '${filename}');
+formData.append('name', '${filename}'); // 文件名
+formData.append('policy', 'xxxxxx');
+formData.append('OSSAccessKeyId', 'xxxxxx');
+formData.append('success_action_status', 200); // 让服务端返回200，不设置则默认返回204
+formData.append('signature', 'xxxxxx');
+formData.append('file', file); // 上传的文件 
+```
+ 3. 以 Post multipart 形式上传
 
 ## 测试
 进行单元测试前请先配置好 test.module.ts 里面的oss配置

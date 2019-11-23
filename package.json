@@ -1,6 +1,6 @@
 {
     "name": "@nest-public/nest-oss",
-    "version": "2.0.2",
+    "version": "2.1.0",
     "description": "nest.js框架阿里云OSS上传插件",
     "main": "./lib/index.js",
     "files": [

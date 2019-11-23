@@ -33,6 +33,14 @@ export interface OSSSucessResponse {
     socketHandledRequests?: number;
     socketHandledResponses?: number;
 }
+export interface ClientSign {
+    name?: string;
+    key?: string;
+    policy: string;
+    OSSAccessKeyId: string;
+    success_action_status?: number;
+    signature: string;
+}
 export declare class OSSBase {
     protected ossClient: OSS;
     protected options: OSSOptions;
@@ -60,4 +68,8 @@ export declare class OSSBase {
      * @param {*} height
      */
     getOssSign(url: string, width?: number, height?: number): string;
+    /**
+     * 前端直传签名
+     */
+    getUploadSgin(): ClientSign;
 }

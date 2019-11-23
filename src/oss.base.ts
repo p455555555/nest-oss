@@ -39,6 +39,15 @@ export interface OSSSucessResponse {
     socketHandledResponses?: number
 }
 
+export interface ClientSign {
+    name?: string;
+    key?: string;
+    policy: string;
+    OSSAccessKeyId: string;
+    success_action_status?: number;
+    signature: string;
+}
+
 export class OSSBase {
     protected ossClient: OSS;
     protected options: OSSOptions;
@@ -185,5 +194,29 @@ export class OSSBase {
         }
 
         return urlReturn;
+    }
+
+
+
+    /**
+     * 前端直传签名
+     */
+    public getUploadSgin() {
+        const policyText = {
+            'expiration': `${moment().add(1, 'hours').format('YYYY-MM-DDTHH:mm:ss')}.000Z`, // 设置Policy的失效时间
+            'conditions': [
+                ['content-length-range', 0, 50048576000] // 设置上传文件的大小限制
+            ]
+        };
+        const policyBase64 = Buffer.from((JSON.stringify(policyText))).toString('base64');
+        const uploadSignature = createHmac('sha1', this.options.client.accessKeySecret).update(policyBase64).digest('base64');
+
+        const params: ClientSign = {
+            policy: policyBase64,
+            OSSAccessKeyId: this.options.client.accessKeyId,
+            signature: uploadSignature
+        }
+
+        return params;
     }
 }
