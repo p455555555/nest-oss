@@ -25,7 +25,7 @@ export const config = {
 		timeout: '90s'
 	},
 	domain: '', // 自定义域名
-	multi: true, // 是否开启多线程迸发上传（需node.js 11.7.0以上版本, 默认关闭）
+	multi: true, // 是否开启多线程并行上传（需node.js 11.7.0以上版本, 默认关闭）
 	workers: 4 // 开启线程数，默认为CPU线程数的一半
 };
 ```
@@ -112,8 +112,8 @@ export class AppController {
     /**
      * 批量删除图片
      */
-    @Get('getUrl')
-    public async uploadOSS(@Req() request) {
+    @Get('delete')
+    public async deleteOSS(@Req() request) {
         const uploadUrl = ['images/20191115/16420962.png'];
 		const result = await this.oSSService.deleteMulti([uploadUrl]);
 
