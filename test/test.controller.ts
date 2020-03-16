@@ -54,7 +54,7 @@ export class TestController {
 	/**
 	 * 测试完毕结束线程
 	 */
-	public endThread() {
-		this.oSSService.endThread();
-	}
+	// public endThread() {
+	// 	this.oSSService.endThread();
+	// }
 }

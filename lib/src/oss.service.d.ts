@@ -31,13 +31,4 @@ export declare class OSSService extends OSSBase {
      * @param file
      */
     upload(files: File[]): Promise<UploadResult[]>;
-    /**
-     * 上传到OSS(多线程并行上传)
-     * @param file
-     */
-    private uploadOSSMuit;
-    /**
-     * 结束上传进程(仅作为单元测试结束调用)
-     */
-    endThread(): void;
 }

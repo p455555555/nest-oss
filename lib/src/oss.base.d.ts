@@ -1,6 +1,6 @@
 /// <reference types="node" />
-import * as stream from 'stream';
 import { OSSOptions } from './oss.provider';
+import * as stream from 'stream';
 import * as OSS from 'ali-oss';
 export interface UploadResult {
     uploaded: boolean;

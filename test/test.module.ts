@@ -14,8 +14,6 @@ const options = {
 		cname: false, // 自定义endpoint
 		timeout: '90s'
 	},
-	multi: false,
-	workers: 4
 };
 /**
  * test模块

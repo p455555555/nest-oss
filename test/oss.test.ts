@@ -64,13 +64,13 @@ describe('TestController', () => {
         const result = testController.getUploadSgin();
 
         console.log('签名参数输出>>', result);
-        expect(result.policy.length).toBe('string');
-        expect(result.OSSAccessKeyId.length).toBe('string');
-        expect(result.signature.length).toBe('string');
+        expect(result.policy.length).toBe(128);
+        expect(result.OSSAccessKeyId.length).toBe(16);
+        expect(result.signature.length).toBe(28);
     });
 
     afterAll(() => {
-        testController.endThread();
+        // testController.endThread();
         process.exitCode = 0;
     });
 });

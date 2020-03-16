@@ -1,8 +1,8 @@
 import { createHmac } from 'crypto';
+import { OSSOptions } from './oss.provider';
 import * as stream from 'stream';
 import * as moment from 'moment';
 import * as path from 'path';
-import { OSSOptions } from './oss.provider';
 import * as OSS from 'ali-oss';
 
 export interface UploadResult {
@@ -78,7 +78,7 @@ export class OSSBase {
         }
 
         if (files && files.length > 0) {
-	    for (const item of files) {
+            for (const item of files) {
                 const filename = this.getImgName(item.originalname);
                 const imgPath = `images/${moment().format('YYYYMMDD')}`;
                 const target = imgPath + '/' + filename;
@@ -108,7 +108,7 @@ export class OSSBase {
                 }
 
                 result.push(info);
-	    }
+            }
         }
 
         return result;
@@ -195,8 +195,6 @@ export class OSSBase {
 
         return urlReturn;
     }
-
-
 
     /**
      * 前端直传签名

@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/%40nest-public%2Fnest-oss.svg)](https://badge.fury.io/js/%40nest-public%2Fnest-oss)
+![npm](https://img.shields.io/npm/dm/@nest-public/nest-oss)
 
 # nest-oss
 
@@ -25,8 +26,6 @@ export const config = {
 		timeout: '90s'
 	},
 	domain: '', // 自定义域名
-	multi: true, // 是否开启多线程并行上传（需node.js 11.7.0以上版本, 默认关闭）
-	workers: 4 // 开启线程数，默认为CPU线程数的一半
 };
 ```
 module.ts
