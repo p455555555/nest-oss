@@ -1,6 +1,7 @@
 import { Controller, Get, Post, UseInterceptors, UploadedFiles } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { OSSService } from '../src/oss.service';
+import { UploadFileOptions } from '../src/oss.base';
 
 interface File {
 	fieldname: string;
@@ -8,7 +9,7 @@ interface File {
 	encoding: string;
 	mimetype: string;
 	buffer: Buffer;
-    size: number;
+	size: number;
 }
 
 /**
@@ -25,8 +26,8 @@ export class TestController {
 	 */
 	@Post('uploadOSS')
 	@UseInterceptors(FilesInterceptor('files'))
-	public async uploadOSS(@UploadedFiles() file: File[]) {
-		const result = await this.oSSService.upload(file);
+	public async uploadOSS(@UploadedFiles() file: File|File[], options?: UploadFileOptions) {
+		const result = await this.oSSService.upload(file, options);
 
 		return result;
 	}
