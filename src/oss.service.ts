@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { NormalSuccessResponse, DeleteMultiResult } from 'ali-oss';
 import { OSS_CONST, OSS_OPTIONS, OSSOptions } from './oss.provider';
-import { OSSBase, UploadResult, File } from './oss.base';
+import { OSSBase, UploadResult, File, UploadFileOptions } from './oss.base';
 import * as OSS from 'ali-oss';
 // import { threadpool } from '../lib/src/oss.works.js';
 // import { threadpool } from './oss.works';
@@ -55,12 +55,12 @@ export class OSSService extends OSSBase {
      * 上传
      * @param file
      */
-    public async upload(files: File[]): Promise<UploadResult[]> {
+    public async upload(files: File|File[], options?: UploadFileOptions): Promise<UploadResult[]> {
         //if (this.version >= 11.7 && this.options.multi) {
         //    return await this.uploadOSSMuit(files);
         //} else {
-            return await this.uploadOSS(files);
-       //}
+            return await this.uploadOSS(files, options);
+        //}
     }
 
     /**

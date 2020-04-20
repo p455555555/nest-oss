@@ -2,7 +2,7 @@ import { createHmac } from 'crypto';
 import { OSSOptions } from './oss.provider';
 import * as stream from 'stream';
 import * as moment from 'moment';
-import * as path from 'path';
+import * as Path from 'path';
 import * as OSS from 'ali-oss';
 
 export interface UploadResult {
@@ -48,6 +48,13 @@ export interface ClientSign {
     signature: string;
 }
 
+export interface UploadFileOptions {
+    filepath?: string;
+    filename?: string;
+    isInitDateDic?: boolean;
+    dateDicFormat?: string;
+}
+
 export class OSSBase {
     protected ossClient: OSS;
     protected options: OSSOptions;
@@ -59,7 +66,6 @@ export class OSSBase {
      * @param imageStream 
      */
     protected async putStream(target: string, imageStream: stream.PassThrough): Promise<OSSSucessResponse> {
-
         return await this.ossClient.putStream(target, imageStream);
     }
 
@@ -67,21 +73,20 @@ export class OSSBase {
      * 上传到OSS
      * @param file 
      */
-    protected async uploadOSS(file: File|File[]) {
+    protected async uploadOSS(file: File|File[], options?: UploadFileOptions) {
         const result: UploadResult[] = [];
-        let files: File[] = [];
-
-        if (Array.isArray(file)) {
-            files = file;
-        } else {
-            files = [file]
-        }
+        const files = Array.isArray(file) ? file : [file]
 
         if (files && files.length > 0) {
             for (const item of files) {
-                const filename = this.getImgName(item.originalname);
-                const imgPath = `images/${moment().format('YYYYMMDD')}`;
-                const target = imgPath + '/' + filename;
+                const filename = options?.filename
+                    ? options?.filename + Path.extname(item.originalname).toLowerCase()
+                    : this.getImgName(item.originalname);
+
+                const filepath = this.parseFilepath(options?.filepath);
+                const path = `${filepath}/${this.initDateDic(options?.isInitDateDic, options?.dateDicFormat)}`;
+                const target = path + filename;
+
                 const info: UploadResult = {
                     uploaded: true, 
                     path: '',
@@ -97,14 +102,14 @@ export class OSSBase {
                     
                     if (uploadResult.res.status === 200) {
                         info.path = uploadResult.name
-                        info.src = uploadResult.url || '';
+                        info.src = this.formatDomain(uploadResult.url);
                         info.srcSign = this.getOssSign(info.src);
                     }
                 } catch (error) {
                     console.error('error', error);
                     info.uploaded = false;
                     info.path = item.originalname;
-                    info.message = '上传失败';
+                    info.message = `上传失败: ${error}`;
                 }
 
                 result.push(info);
@@ -114,14 +119,53 @@ export class OSSBase {
         return result;
     }
 
+    /** 格式化自定义域名 */
+    private formatDomain(url?: string) {
+        if (!url) return '';
+
+        const domain = this.options.domain;
+        if (!domain) return url;
+
+        const { bucket, endpoint } = this.options.client;
+        return url.replace(`${bucket}.${endpoint}`, domain);
+    }
+
     /**
      * 生成文件名(按时间)
      * @param {*} filename 
      */
     protected getImgName(filename: string) {
-        const name = `${moment().format('HHmmss')}${Math.floor(Math.random() * 100)}${path.extname(filename).toLowerCase()}`;
+        const time = moment().format('HHmmss');
+        const randomStamp = `${Math.floor(Math.random() * 1000)}`;
+        const extname = Path.extname(filename).toLowerCase();
 
-        return name;
+        return time + randomStamp + extname;
+    }
+
+    /**
+     * 转化为可用路径格式
+     * @param filepath 自定义上传oss文件路径
+     */
+    private parseFilepath(filepath?: string) {
+        if (!filepath) return 'image';
+        if (filepath.lastIndexOf('/') === filepath.length - 1)  {
+            return filepath.substring(0, filepath.length - 1)
+        };
+        return filepath;
+    }
+
+    /**
+     * 自定义初始化文件夹
+     * @param isInitDateDic 是否自动按照日期创建文件夹
+     * @param format 自定义格式（与momentjs format一致）
+     */
+    private initDateDic(isInitDateDic?: boolean, format?: string) {
+        let isInit = false
+        if (typeof isInitDateDic === 'undefined') isInit = true;
+        else isInit = isInitDateDic;
+
+        if (!isInit) return ''
+        return !format ? moment().format('YYYYMMDD') + '/' : moment().format(format) + '/'
     }
 
     /**
@@ -185,11 +229,12 @@ export class OSSBase {
 
             // hmacsha1 签名
             const sign = encodeURIComponent(createHmac('sha1', accessKey).update(toSignString).digest('base64'));
+            const h = this.options.client.secure ? 'https' : 'http';
             
             if (width && height) {
-                urlReturn = `https://${endpoint}/${target}?x-oss-process=image/resize,m_fill,w_${width},h_${height},limit_0&OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
+                urlReturn = `${h}://${endpoint}/${target}?x-oss-process=image/resize,m_fill,w_${width},h_${height},limit_0&OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
             } else {
-                urlReturn = `https://${endpoint}/${target}?OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
+                urlReturn = `${h}://${endpoint}/${target}?OSSAccessKeyId=${accessId}&Expires=${expireTime}&Signature=${sign}`;
             }
         }
 
