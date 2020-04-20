@@ -46,7 +46,7 @@ describe('TestController', () => {
     it('流式上传测试', async () => {
         const fileBuf = fs.readFileSync(`${__dirname}/${fileName}`);
         const webFile: File = new File(fileName, fileBuf);
-        const result = await testController.uploadOSS([webFile, webFile, webFile, webFile]);
+        const result = await testController.uploadOSS(webFile, { filepath: '/upload' });
 
         for (const item of result) {
             uploadUrl.push(item.path);
@@ -63,9 +63,9 @@ describe('TestController', () => {
     it('获取前端直传参数测试', () => {
         const result = testController.getUploadSgin();
 
-        console.log('签名参数输出>>', result);
+        // console.log('签名参数输出>>', result);
         expect(result.policy.length).toBe(128);
-        expect(result.OSSAccessKeyId.length).toBe(16);
+        expect(result.OSSAccessKeyId.length).toBe(24);
         expect(result.signature.length).toBe(28);
     });
 
